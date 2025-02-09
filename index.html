@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agendamento</title>
+  <script>
+    // Função para validar horários disponíveis
+    async function validateAndSubmit() {
+      const selectedDate = document.getElementById("date").value;
+      const selectedTime = document.getElementById("time").value;
+
+      // Consulte os horários disponíveis via Google Sheets
+      const availableTimes = await fetchAvailableTimes(selectedDate);
+
+      if (!availableTimes.includes(selectedTime)) {
+        alert("Este horário já está agendado. Por favor, escolha outro.");
+        return;
+      }
+
+      // Envie os dados ao Google Forms
+      submitToGoogleForms(selectedDate, selectedTime);
+    }
+
+    // Função para consultar horários disponíveis via Google Sheets
+    async function fetchAvailableTimes(date) {
+      const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-.../pub?output=csv"; // Substitua pela URL pública da planilha
+      const response = await fetch(sheetUrl);
+      const text = await response.text();
+      const rows = text.split("\n").map(row => row.split(","));
+      const bookedTimes = rows.filter(row => row[0] === date).map(row => row[1]);
+      const allTimes = ["8:00", "9:00", "10:00", "11:00"];
+      return allTimes.filter(time => !bookedTimes.includes(time));
+    }
+
+    // Função para enviar dados ao Google Forms
+    function submitToGoogleForms(date, time) {
+      const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLS.../formResponse"; // Substitua pela URL do seu formulário
+      const formData = new FormData();
+      formData.append("entry.123456789", date); // Substitua pelo ID do campo de data
+      formData.append("entry.987654321", time); // Substituta pelo ID do campo de horário
+
+      fetch(formUrl, {
+        method: "POST",
+        body: new URLSearchParams(formData),
+        headers: { "Content-Type": "application/x-www-form-urlencoded" }
+      })
+        .then(() => alert("Agendamento realizado com sucesso!"))
+        .catch(() => alert("Erro ao enviar o formulário."));
+    }
+  </script>
+</head>
+<body>
+  <h1>Agendamento</h1>
+  <form id="customForm">
+    <label for="date">Data:</label>
+    <input type="date" id="date" required><br><br>
+
+    <label for="time">Horário:</label>
+    <select id="time" required>
+      <option value="">Selecione um horário</option>
+      <option value="8:00">8:00</option>
+      <option value="9:00">9:00</option>
+      <option value="10:00">10:00</option>
+      <option value="11:00">11:00</option>
+    </select><br><br>
+
+    <button type="button" onclick="validateAndSubmit()">Enviar</button>
+  </form>
+</body>
+</html>
