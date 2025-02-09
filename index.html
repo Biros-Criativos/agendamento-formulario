@@ -24,7 +24,7 @@
 
     // Função para consultar horários disponíveis via Google Sheets
     async function fetchAvailableTimes(date) {
-      const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-.../pub?output=csv"; // Substitua pela URL pública da planilha
+      const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRN-2KA2SclPTnXVwwcsAyd3HYUSfmkmOijeOPaj4Ru3u_t2kcHN5oMHlGZRh5RvCvgMoYjlBNjWMe5/pub?gid=1536336991&single=true&output=csv"; // Substitua pela URL pública da planilha
       const response = await fetch(sheetUrl);
       const text = await response.text();
       const rows = text.split("\n").map(row => row.split(","));
