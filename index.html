@@ -83,8 +83,12 @@
       const response = await fetch(sheetUrl);
       const text = await response.text();
       const rows = text.split("\n").map(row => row.split(","));
+      
+      // Filtra os horários já agendados para a data selecionada
       const bookedTimes = rows.filter(row => row[0] === date).map(row => row[1]);
       const allTimes = ["8:00", "9:00", "10:00", "11:00"];
+      
+      // Retorna os horários disponíveis (não agendados)
       return allTimes.filter(time => !bookedTimes.includes(time));
     }
   </script>
