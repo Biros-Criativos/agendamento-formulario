@@ -42,8 +42,16 @@
     }
   </style>
   <script>
+    // Lista de horários disponíveis (inicialmente todos disponíveis)
+    const availableTimes = {
+      "2023-10-01": ["8:00", "9:00", "10:00", "11:00"],
+      "2023-10-02": ["8:00", "9:00", "10:00", "11:00"],
+      "2023-10-03": ["8:00", "9:00", "10:00", "11:00"],
+      // Adicione mais datas conforme necessário
+    };
+
     // Função para validar horários disponíveis
-    async function validateAndSubmit(event) {
+    function validateAndSubmit(event) {
       event.preventDefault(); // Impede o envio imediato do formulário
 
       const selectedDate = document.getElementById("date").value;
@@ -56,13 +64,16 @@
         return;
       }
 
-      // Consulte os horários disponíveis via Google Sheets
-      const availableTimes = await fetchAvailableTimes(selectedDate);
-
       // Verifica se o horário está disponível
-      if (!availableTimes.includes(selectedTime)) {
+      if (!availableTimes[selectedDate] || !availableTimes[selectedDate].includes(selectedTime)) {
         alert("Este horário já está agendado. Escolha outro.");
         return;
+      }
+
+      // Remove o horário selecionado da lista de horários disponíveis
+      const index = availableTimes[selectedDate].indexOf(selectedTime);
+      if (index > -1) {
+        availableTimes[selectedDate].splice(index, 1);
       }
 
       // Preencha os campos ocultos do formulário Google Forms
@@ -76,25 +87,10 @@
       // Envie o formulário HTML nativo
       document.getElementById("googleForm").submit();
     }
-
-    // Função para consultar horários disponíveis via Google Sheets
-    async function fetchAvailableTimes(date) {
-      const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRN-2KA2SclPTnXVwwcsAyd3HYUSfmkmOijeOPaj4Ru3u_t2kcHN5oMHlGZRh5RvCvgMoYjlBNjWMe5/pub?gid=1536336991&single=true&output=csv"; // Substitua pela URL pública da planilha
-      const response = await fetch(sheetUrl);
-      const text = await response.text();
-      const rows = text.split("\n").map(row => row.split(","));
-      
-      // Filtra os horários já agendados para a data selecionada
-      const bookedTimes = rows.filter(row => row[0] === date).map(row => row[1]);
-      const allTimes = ["8:00", "9:00", "10:00", "11:00"];
-      
-      // Retorna os horários disponíveis (não agendados)
-      return allTimes.filter(time => !bookedTimes.includes(time));
-    }
   </script>
 </head>
 <body>
-  <h1>Birôs Criativos - Agendamento da Consultoria</h1>
+  <h1>Agendamento da Consultoria</h1>
   <form id="customForm" onsubmit="validateAndSubmit(event)">
     <!-- Campos do formulário -->
     <label for="nome">Nome:</label>
