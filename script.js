@@ -33,7 +33,7 @@ async function fetchAvailableTimes(date) {
 }
 
 function submitToGoogleForms(date, time) {
-  const formUrl = "SUA_URL_DO_GOOGLE_FORMS_AQUI"; // Cole a URL aqui!
+  const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdOwhfhYI6YX4V0koslR5jhCWN4-CiMrUHCu7u0bSpx-JPcOw/viewform?usp=preview"; // Cole a URL aqui!
   const formData = new FormData();
 
   // Adicione os IDs dos campos (exemplo):
