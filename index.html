@@ -3,72 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agendamento da Consultoria</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    h1 {
-      text-align: center;
-      color: #333;
-    }
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: bold;
-    }
-    input, select {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 16px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    button {
-      width: 100%;
-      padding: 12px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-  </style>
+  <title>Agendamento</title>
   <script>
     // Função para validar horários disponíveis
-    async function validateAndSubmit() {
+    async function validateAndSubmit(event) {
+      event.preventDefault(); // Impede o envio imediato do formulário
+
       const selectedDate = document.getElementById("date").value;
       const selectedTime = document.getElementById("time").value;
-
-      // Verifica se todos os campos foram preenchidos
-      if (!selectedDate || !selectedTime || !document.getElementById("nome").value || !document.getElementById("email").value || !document.getElementById("telefone").value) {
-        alert("Preencha todos os campos!");
-        return;
-      }
 
       // Consulte os horários disponíveis via Google Sheets
       const availableTimes = await fetchAvailableTimes(selectedDate);
 
-      // Verifica se o horário está disponível
       if (!availableTimes.includes(selectedTime)) {
-        alert("Este horário já está agendado. Escolha outro.");
+        alert("Este horário já está agendado. Por favor, escolha outro.");
         return;
       }
 
-      // Envie os dados ao Google Forms
-      submitToGoogleForms(selectedDate, selectedTime);
+      // Envie o formulário HTML nativo
+      document.getElementById("googleForm").submit();
     }
 
     // Função para consultar horários disponíveis via Google Sheets
     async function fetchAvailableTimes(date) {
-      const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRN-2KA2SclPTnXVwwcsAyd3HYUSfmkmOijeOPaj4Ru3u_t2kcHN5oMHlGZRh5RvCvgMoYjlBNjWMe5/pub?gid=1536336991&single=true&output=csv"; // Substitua pela URL pública da planilha
+      const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-.../pub?output=csv"; // Substitua pela URL pública da planilha
       const response = await fetch(sheetUrl);
       const text = await response.text();
       const rows = text.split("\n").map(row => row.split(","));
@@ -76,45 +34,11 @@
       const allTimes = ["8:00", "9:00", "10:00", "11:00"];
       return allTimes.filter(time => !bookedTimes.includes(time));
     }
-
-    // Função para enviar dados ao Google Forms
-    function submitToGoogleForms(date, time) {
-      const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdOwhfhYI6YX4V0koslR5jhCWN4-CiMrUHCu7u0bSpx-JPcOw/formResponse"; // Substitua pela URL do seu formulário
-      const formData = new FormData();
-
-      // IDs dos campos (substitua pelos seus IDs reais)
-      formData.append("entry.1080252722", date); // ID do campo de Data
-      formData.append("entry.900855182", time); // ID do campo de Horário
-      formData.append("entry.123456789", document.getElementById("nome").value); // ID do campo de Nome
-      formData.append("entry.987654321", document.getElementById("email").value); // ID do campo de E-mail
-      formData.append("entry.1685976361", document.getElementById("telefone").value); // ID do campo de Telefone
-
-      fetch(formUrl, {
-        method: "POST",
-        body: new URLSearchParams(formData),
-        headers: { "Content-Type": "application/x-www-form-urlencoded" }
-      })
-        .then(() => {
-          alert("Agendamento realizado com sucesso!");
-          document.getElementById("customForm").reset(); // Limpa o formulário
-        })
-        .catch(() => alert("Erro ao enviar o formulário."));
-    }
   </script>
 </head>
 <body>
-  <h1>Agendamento da Consultoria</h1>
-  <form id="customForm">
-    <!-- Campos do formulário -->
-    <label for="nome">Nome:</label>
-    <input type="text" id="nome" required><br><br>
-
-    <label for="email">E-mail:</label>
-    <input type="email" id="email" required><br><br>
-
-    <label for="telefone">Telefone:</label>
-    <input type="tel" id="telefone" required><br><br>
-
+  <h1>Agendamento</h1>
+  <form id="customForm" onsubmit="validateAndSubmit(event)">
     <label for="date">Data:</label>
     <input type="date" id="date" required><br><br>
 
@@ -127,7 +51,13 @@
       <option value="11:00">11:00</option>
     </select><br><br>
 
-    <button type="button" onclick="validateAndSubmit()">Enviar</button>
+    <!-- Formulário oculto para enviar dados ao Google Forms -->
+    <form id="googleForm" action="https://docs.google.com/forms/d/e/1FAIpQLS.../formResponse" method="POST" target="_self" style="display: none;">
+      <input type="hidden" name="entry.123456789" id="formDate"> <!-- Substitua pelo ID do campo de data -->
+      <input type="hidden" name="entry.987654321" id="formTime"> <!-- Substitua pelo ID do campo de horário -->
+    </form>
+
+    <button type="submit">Enviar</button>
   </form>
 </body>
 </html>
