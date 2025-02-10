@@ -48,9 +48,10 @@
 
       const selectedDate = document.getElementById("date").value;
       const selectedTime = document.getElementById("time").value;
+      const selectedRegion = document.getElementById("region").value;
 
       // Verifica se todos os campos foram preenchidos
-      if (!selectedDate || !selectedTime || !document.getElementById("nome").value || !document.getElementById("email").value || !document.getElementById("telefone").value) {
+      if (!selectedDate || !selectedTime || !document.getElementById("nome").value || !document.getElementById("email").value || !document.getElementById("telefone").value || !selectedRegion) {
         alert("Preencha todos os campos!");
         return;
       }
@@ -70,6 +71,7 @@
       document.getElementById("formNome").value = document.getElementById("nome").value;
       document.getElementById("formEmail").value = document.getElementById("email").value;
       document.getElementById("formTelefone").value = document.getElementById("telefone").value;
+      document.getElementById("formRegion").value = selectedRegion;
 
       // Envie o formulário HTML nativo
       document.getElementById("googleForm").submit();
@@ -97,6 +99,32 @@
     <input type="email" id="email" required><br><br>
     <label for="telefone">Telefone:</label>
     <input type="tel" id="telefone" required><br><br>
+    <label for="region">Região:</label>
+    <select id="region" required>
+      <option value="">Selecione uma região</option>
+      <option value="Areia">Areia</option>
+      <option value="Cabedelo">Cabedelo</option>
+      <option value="Cajazeiras">Cajazeiras</option>
+      <option value="Campina Grande">Campina Grande</option>
+      <option value="Catolé do Rocha">Catolé do Rocha</option>
+      <option value="Cuité">Cuité</option>
+      <option value="Esperança">Esperança</option>
+      <option value="Guarabira">Guarabira</option>
+      <option value="Itabaiana">Itabaiana</option>
+      <option value="Itaporanga">Itaporanga</option>
+      <option value="João Pessoa">João Pessoa</option>
+      <option value="Monteiro">Monteiro</option>
+      <option value="Patos">Patos</option>
+      <option value="Pedras de Fogo">Pedras de Fogo</option>
+      <option value="Picuí">Picuí</option>
+      <option value="Pombal">Pombal</option>
+      <option value="Princesa Isabel">Princesa Isabel</option>
+      <option value="Santa Luzia">Santa Luzia</option>
+      <option value="Santa Rita">Santa Rita</option>
+      <option value="Soledade">Soledade</option>
+      <option value="Sousa">Sousa</option>
+      <option value="Sumé">Sumé</option>
+    </select><br><br>
     <label for="date">Data:</label>
     <input type="date" id="date" required><br><br>
     <label for="time">Horário:</label>
@@ -117,6 +145,7 @@
     <input type="hidden" name="entry.123456789" id="formNome"> <!-- ID do campo de Nome -->
     <input type="hidden" name="entry.987654321" id="formEmail"> <!-- ID do campo de E-mail -->
     <input type="hidden" name="entry.1685976361" id="formTelefone"> <!-- ID do campo de Telefone -->
+    <input type="hidden" name="entry.111111111" id="formRegion"> <!-- ID do campo de Região (substitua pelo ID correto) -->
   </form>
 </body>
 </html>
