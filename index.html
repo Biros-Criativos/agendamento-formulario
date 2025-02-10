@@ -44,7 +44,7 @@
   <script>
     // Função para consultar horários disponíveis via Web App
     async function fetchAvailableTimes(date) {
-      const webAppUrl = "https://script.google.com/macros/s/AKfycbyWAMyrsFfj_jmMAOAnX4Kkp0d4tPoGpFNLi4XPROAS256ezjQVrvYCuHZXbEzD-r_bng/exec"; // Substitua pela URL do seu Web App
+      const webAppUrl = "https://script.google.com/macros/s/AKfycbz0uI8uD6fdvOk7P7uZk29YnNJOVKsj2kUIJmZfa4vE2iLLDDHzQxS4xKeYhBU7PodKRg/exec"; // Substitua pela URL do seu Web App
       const response = await fetch(webAppUrl);
       const bookedSlots = await response.json();
 
@@ -95,7 +95,7 @@
   </script>
 </head>
 <body>
-  <h1>Agendamento da Consultoria</h1>
+  <h1>Birôs Criativos - Agendamento da Consultoria</h1>
   <form id="customForm" onsubmit="validateAndSubmit(event)">
     <!-- Campos do formulário -->
     <label for="nome">Nome:</label>
