@@ -42,16 +42,24 @@
     }
   </style>
   <script>
-    // Lista de horários disponíveis (inicialmente todos disponíveis)
-    const availableTimes = {
-      "2023-10-01": ["8:00", "9:00", "10:00", "11:00"],
-      "2023-10-02": ["8:00", "9:00", "10:00", "11:00"],
-      "2023-10-03": ["8:00", "9:00", "10:00", "11:00"],
-      // Adicione mais datas conforme necessário
-    };
+    // Função para consultar horários disponíveis via Web App
+    async function fetchAvailableTimes(date) {
+      const webAppUrl = "https://script.google.com/macros/s/AKfycbyO-Epur4GFgRS1ju6iUKE0rl1o62N7HPRdP_kpIexTp978-bNVt8JsvK2Au3hdlPJnWA/exec"; // Substitua pela URL do seu Web App
+      const response = await fetch(webAppUrl);
+      const bookedSlots = await response.json();
+
+      // Lista de todos os horários possíveis
+      const allTimes = ["8:00", "9:00", "10:00", "11:00"];
+
+      // Filtra os horários já agendados para a data selecionada
+      const bookedTimes = bookedSlots.filter(slot => slot.date === date).map(slot => slot.time);
+
+      // Retorna os horários disponíveis
+      return allTimes.filter(time => !bookedTimes.includes(time));
+    }
 
     // Função para validar horários disponíveis
-    function validateAndSubmit(event) {
+    async function validateAndSubmit(event) {
       event.preventDefault(); // Impede o envio imediato do formulário
 
       const selectedDate = document.getElementById("date").value;
@@ -64,16 +72,13 @@
         return;
       }
 
+      // Consulte os horários disponíveis via Web App
+      const availableTimes = await fetchAvailableTimes(selectedDate);
+
       // Verifica se o horário está disponível
-      if (!availableTimes[selectedDate] || !availableTimes[selectedDate].includes(selectedTime)) {
+      if (!availableTimes.includes(selectedTime)) {
         alert("Este horário já está agendado. Escolha outro.");
         return;
-      }
-
-      // Remove o horário selecionado da lista de horários disponíveis
-      const index = availableTimes[selectedDate].indexOf(selectedTime);
-      if (index > -1) {
-        availableTimes[selectedDate].splice(index, 1);
       }
 
       // Preencha os campos ocultos do formulário Google Forms
