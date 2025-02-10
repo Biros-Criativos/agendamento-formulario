@@ -4,17 +4,61 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agendamento da Consultoria</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
   <script>
     // Função para validar horários disponíveis
     async function validateAndSubmit() {
       const selectedDate = document.getElementById("date").value;
       const selectedTime = document.getElementById("time").value;
 
+      // Verifica se todos os campos foram preenchidos
+      if (!selectedDate || !selectedTime || !document.getElementById("nome").value || !document.getElementById("email").value || !document.getElementById("telefone").value) {
+        alert("Preencha todos os campos!");
+        return;
+      }
+
       // Consulte os horários disponíveis via Google Sheets
       const availableTimes = await fetchAvailableTimes(selectedDate);
 
+      // Verifica se o horário está disponível
       if (!availableTimes.includes(selectedTime)) {
-        alert("Este horário já está agendado. Por favor, escolha outro.");
+        alert("Este horário já está agendado. Escolha outro.");
         return;
       }
 
@@ -35,24 +79,42 @@
 
     // Função para enviar dados ao Google Forms
     function submitToGoogleForms(date, time) {
-      const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdOwhfhYI6YX4V0koslR5jhCWN4-CiMrUHCu7u0bSpx-JPcOw/viewform?usp=preview"; // Substitua pela URL do seu formulário
+      const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdOwhfhYI6YX4V0koslR5jhCWN4-CiMrUHCu7u0bSpx-JPcOw/formResponse"; // Substitua pela URL do seu formulário
       const formData = new FormData();
-      formData.append("entry.1080252722", date); // Substitua pelo ID do campo de data
-      formData.append("entry.900855182", time); // Substituta pelo ID do campo de horário
+
+      // IDs dos campos (substitua pelos seus IDs reais)
+      formData.append("entry.1080252722", date); // ID do campo de Data
+      formData.append("entry.900855182", time); // ID do campo de Horário
+      formData.append("entry.123456789", document.getElementById("nome").value); // ID do campo de Nome
+      formData.append("entry.987654321", document.getElementById("email").value); // ID do campo de E-mail
+      formData.append("entry.1685976361", document.getElementById("telefone").value); // ID do campo de Telefone
 
       fetch(formUrl, {
         method: "POST",
         body: new URLSearchParams(formData),
         headers: { "Content-Type": "application/x-www-form-urlencoded" }
       })
-        .then(() => alert("Agendamento realizado com sucesso!"))
+        .then(() => {
+          alert("Agendamento realizado com sucesso!");
+          document.getElementById("customForm").reset(); // Limpa o formulário
+        })
         .catch(() => alert("Erro ao enviar o formulário."));
     }
   </script>
 </head>
 <body>
-  <h1>Agendamento</h1>
+  <h1>Agendamento da Consultoria</h1>
   <form id="customForm">
+    <!-- Campos do formulário -->
+    <label for="nome">Nome:</label>
+    <input type="text" id="nome" required><br><br>
+
+    <label for="email">E-mail:</label>
+    <input type="email" id="email" required><br><br>
+
+    <label for="telefone">Telefone:</label>
+    <input type="tel" id="telefone" required><br><br>
+
     <label for="date">Data:</label>
     <input type="date" id="date" required><br><br>
 
@@ -67,6 +129,5 @@
 
     <button type="button" onclick="validateAndSubmit()">Enviar</button>
   </form>
-  <script src="script.js"></script>
 </body>
 </html>
