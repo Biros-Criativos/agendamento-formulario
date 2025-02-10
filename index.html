@@ -26,7 +26,7 @@
 
     // Função para consultar horários disponíveis via Google Sheets
     async function fetchAvailableTimes(date) {
-      const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-.../pub?output=csv"; // Substitua pela URL pública da planilha
+      const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRul97H6XtElYjrVQJrVAj71Mu55UMWGILZGOXaQjPXYli0r0sybHvZH38NOzS-1mxi21j7M8K5HOu0/pub?gid=463979301&single=true&output=csv"; // Substitua pela URL pública da planilha
       const response = await fetch(sheetUrl);
       const text = await response.text();
       const rows = text.split("\n").map(row => row.split(","));
@@ -52,7 +52,7 @@
     </select><br><br>
 
     <!-- Formulário oculto para enviar dados ao Google Forms -->
-    <form id="googleForm" action="https://docs.google.com/forms/d/e/1FAIpQLS.../formResponse" method="POST" target="_self" style="display: none;">
+    <form id="googleForm" action="https://docs.google.com/forms/d/e/1FAIpQLSdOwhfhYI6YX4V0koslR5jhCWN4-CiMrUHCu7u0bSpx-JPcOw/formResponse" method="POST" target="_self" style="display: none;">
       <input type="hidden" name="entry.123456789" id="formDate"> <!-- Substitua pelo ID do campo de data -->
       <input type="hidden" name="entry.987654321" id="formTime"> <!-- Substitua pelo ID do campo de horário -->
     </form>
