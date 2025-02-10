@@ -58,21 +58,20 @@
       return allTimes.filter(time => !bookedTimes.includes(time));
     }
 
-    // Função para validar horários disponíveis
+    // Função para validar e enviar o formulário
     async function validateAndSubmit(event) {
       event.preventDefault(); // Impede o envio imediato do formulário
 
       const selectedDate = document.getElementById("date").value;
       const selectedTime = document.getElementById("time").value;
-      const selectedRegion = document.getElementById("region").value;
 
       // Verifica se todos os campos foram preenchidos
-      if (!selectedDate || !selectedTime || !document.getElementById("nome").value || !document.getElementById("email").value || !document.getElementById("telefone").value || !selectedRegion) {
+      if (!selectedDate || !selectedTime || !document.getElementById("nome").value || !document.getElementById("email").value || !document.getElementById("telefone").value || !document.getElementById("region").value) {
         alert("Preencha todos os campos!");
         return;
       }
 
-      // Consulte os horários disponíveis via Web App
+      // Consulta os horários disponíveis via Web App
       const availableTimes = await fetchAvailableTimes(selectedDate);
 
       // Verifica se o horário está disponível
@@ -81,21 +80,21 @@
         return;
       }
 
-      // Preencha os campos ocultos do formulário Google Forms
+      // Preenche os campos ocultos do formulário Google Forms
       document.getElementById("formDate").value = selectedDate;
       document.getElementById("formTime").value = selectedTime;
       document.getElementById("formNome").value = document.getElementById("nome").value;
       document.getElementById("formEmail").value = document.getElementById("email").value;
       document.getElementById("formTelefone").value = document.getElementById("telefone").value;
-      document.getElementById("formRegion").value = selectedRegion;
+      document.getElementById("formRegion").value = document.getElementById("region").value;
 
-      // Envie o formulário HTML nativo
+      // Envia o formulário HTML nativo
       document.getElementById("googleForm").submit();
     }
   </script>
 </head>
 <body>
-  <h1>Birôs Criativos - Agendamento da Consultoria</h1>
+  <h1>Agendamento da Consultoria</h1>
   <form id="customForm" onsubmit="validateAndSubmit(event)">
     <!-- Campos do formulário -->
     <label for="nome">Nome:</label>
@@ -142,7 +141,8 @@
     </select><br><br>
     <button type="submit">Enviar</button>
   </form>
-
+  
+</html>
   <!-- Formulário oculto para enviar dados ao Google Forms -->
   <form id="googleForm" action="https://docs.google.com/forms/d/e/1FAIpQLSdOwhfhYI6YX4V0koslR5jhCWN4-CiMrUHCu7u0bSpx-JPcOw/formResponse" method="POST" target="_self" style="display: none;">
     <input type="hidden" name="entry.662316999" id="formDate"> <!-- ID do campo de Data -->
