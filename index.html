@@ -43,14 +43,23 @@
   </style>
   <script>
     // Função para consultar horários disponíveis via Web App
-    async function fetchAvailableTimes(date) {
+    async function fetchAvailableTimes(date, region) {
       const webAppUrl = "https://script.google.com/macros/s/AKfycby-7vVwSZZruli-Qn5_HajxR4KgqDhZMjkzVhsV-mvknB2XkvF2KJY86eGaxnNReV9O/exec"; // Substitua pela URL do seu Web App
       const response = await fetch(webAppUrl);
       const bookedSlots = await response.json();
+
+      console.log("Horários ocupados:", bookedSlots); // Verifica os dados no console
+
       // Lista de todos os horários possíveis
       const allTimes = ["8:00", "9:00", "10:00", "11:00"];
-      // Filtra os horários já agendados para a data selecionada
-      const bookedTimes = bookedSlots.filter(slot => slot.date === date).map(slot => slot.time);
+
+      // Filtra os horários já agendados para a data e região selecionadas
+      const bookedTimes = bookedSlots
+        .filter(slot => slot.date === date && slot.region === region) // Filtra por data e região
+        .map(slot => slot.time);
+
+      console.log("Horários ocupados para a data e região selecionadas:", bookedTimes); // Verifica os horários filtrados
+
       // Retorna os horários disponíveis
       return allTimes.filter(time => !bookedTimes.includes(time));
     }
@@ -61,21 +70,22 @@
 
       const selectedDate = document.getElementById("date").value;
       const selectedTime = document.getElementById("time").value;
-      const cpf = document.getElementById("cpf").value;
-      const areaAtuacao = document.getElementById("areaAtuacao").value;
+      const selectedRegion = document.getElementById("region").value;
 
       // Verifica se todos os campos foram preenchidos
-      if (!selectedDate || !selectedTime || !document.getElementById("nome").value || !document.getElementById("email").value || !document.getElementById("telefone").value || !document.getElementById("region").value || !cpf || !areaAtuacao) {
+      if (!selectedDate || !selectedTime || !document.getElementById("nome").value || !document.getElementById("email").value || !document.getElementById("telefone").value || !selectedRegion) {
         alert("Preencha todos os campos!");
         return;
       }
 
       // Consulta os horários disponíveis via Web App
-      const availableTimes = await fetchAvailableTimes(selectedDate);
+      const availableTimes = await fetchAvailableTimes(selectedDate, selectedRegion);
+
+      console.log("Horários disponíveis:", availableTimes); // Verifica os horários disponíveis
 
       // Verifica se o horário está disponível
       if (!availableTimes.includes(selectedTime)) {
-        alert("Este horário já está agendado. Escolha outro.");
+        alert("Este horário já está agendado para esta região. Escolha outro.");
         return;
       }
 
@@ -85,9 +95,9 @@
       document.getElementById("formNome").value = document.getElementById("nome").value;
       document.getElementById("formEmail").value = document.getElementById("email").value;
       document.getElementById("formTelefone").value = document.getElementById("telefone").value;
-      document.getElementById("formRegion").value = document.getElementById("region").value;
-      document.getElementById("formCpf").value = cpf; // Novo campo CPF
-      document.getElementById("formAreaAtuacao").value = areaAtuacao; // Novo campo Área de Atuação
+      document.getElementById("formRegion").value = selectedRegion;
+      document.getElementById("formCpf").value = document.getElementById("cpf").value;
+      document.getElementById("formAreaAtuacao").value = document.getElementById("areaAtuacao").value;
 
       // Envia o formulário HTML nativo
       document.getElementById("googleForm").submit();
