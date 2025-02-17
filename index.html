@@ -42,60 +42,60 @@
     }
   </style>
   <script>
-    // Função para validar horários disponíveis por região
-    async function validateAndSubmit(event) {
-      event.preventDefault(); // Impede o envio imediato do formulário
+  async function validateAndSubmit(event) {
+    event.preventDefault(); // Impede o envio imediato do formulário
 
-      // Captura os valores dos campos
-      const selectedDate = document.getElementById("date").value;
-      const selectedTime = document.getElementById("time").value;
-      const selectedRegion = document.getElementById("region").value;
-      const nome = document.getElementById("nome").value;
-      const email = document.getElementById("email").value;
-      const telefone = document.getElementById("telefone").value;
-      const cpf = document.getElementById("cpf").value;
-      const areaAtuacao = document.getElementById("areaAtuacao").value;
+    // Captura os valores dos campos
+    const selectedDate = document.getElementById("date").value;
+    const selectedTime = document.getElementById("time").value;
+    const selectedRegion = document.getElementById("region").value;
+    const nome = document.getElementById("nome").value;
+    const email = document.getElementById("email").value;
+    const telefone = document.getElementById("telefone").value;
+    const cpf = document.getElementById("cpf").value;
+    const areaAtuacao = document.getElementById("areaAtuacao").value;
 
-      // Verifica se todos os campos foram preenchidos
-      if (!selectedDate || !selectedTime || !nome || !email || !telefone || !selectedRegion || !cpf || !areaAtuacao) {
-        alert("Preencha todos os campos!");
-        return;
-      }
-
-      // Consulta os horários disponíveis via Google Sheets (considerando a região)
-      const availableTimes = await fetchAvailableTimes(selectedDate, selectedRegion);
-
-      // Verifica se o horário está disponível
-      if (!availableTimes.includes(selectedTime)) {
-        alert("Este horário já está agendado para esta região. Escolha outro.");
-        return;
-      }
-
-      // Preenche os campos ocultos do formulário Google Forms
-      document.getElementById("formDate").value = selectedDate;
-      document.getElementById("formTime").value = selectedTime;
-      document.getElementById("formNome").value = nome;
-      document.getElementById("formEmail").value = email;
-      document.getElementById("formTelefone").value = telefone;
-      document.getElementById("formRegion").value = selectedRegion;
-      document.getElementById("formCPF").value = cpf;
-      document.getElementById("formAreaAtuacao").value = areaAtuacao;
-
-      // Envia o formulário oculto
-      document.getElementById("googleForm").submit();
+    // Verifica se todos os campos foram preenchidos
+    if (!selectedDate || !selectedTime || !nome || !email || !telefone || !selectedRegion || !cpf || !areaAtuacao) {
+      alert("Preencha todos os campos!");
+      return;
     }
 
-    // Função para consultar horários disponíveis via Google Sheets
-    async function fetchAvailableTimes(date, region) {
-      const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRN-2KA2SclPTnXVwwcsAyd3HYUSfmkmOijeOPaj4Ru3u_t2kcHN5oMHlGZRh5RvCvgMoYjlBNjWMe5/pub?gid=1536336991&single=true&output=csv"; // Substitua pela URL pública da planilha
-      const response = await fetch(sheetUrl);
-      const text = await response.text();
-      const rows = text.split("\n").map(row => row.split(","));
-      const bookedTimes = rows.filter(row => row[0] === date && row[2] === region).map(row => row[1]); // Considera data e região
-      const allTimes = ["8:00", "9:00", "10:00", "11:00"];
-      return allTimes.filter(time => !bookedTimes.includes(time));
+    // URL do Web App (INSIRA AQUI A URL DO SEU WEB APP)
+    const webAppUrl = "https://script.google.com/macros/s/AKfycbzbzakiFUc6FnXvxcNQ1B7svQKd5MmEZxzmLXXfZ1DsBGLzfl2kE4G-pxEwJLk2HY2odg/exec";
+
+    // Dados a serem enviados ao Web App
+    const formData = {
+      nome: nome,
+      email: email,
+      telefone: telefone,
+      cpf: cpf,
+      areaAtuacao: areaAtuacao,
+      region: selectedRegion,
+      date: selectedDate,
+      time: selectedTime
+    };
+
+    try {
+      // Envia os dados ao Web App
+      const response = await fetch(webAppUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ formData: formData })
+      });
+
+      // Lê a resposta do Web App
+      const result = await response.text();
+
+      // Exibe a mensagem de sucesso ou erro
+      alert(result);
+    } catch (error) {
+      alert("Erro ao enviar o formulário. Tente novamente mais tarde.");
     }
-  </script>
+  }
+</script>
 </head>
 <body>
   <h1>Agendamento da Consultoria</h1>
