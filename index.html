@@ -45,19 +45,24 @@
     // Função para validar horários disponíveis por região
     async function validateAndSubmit(event) {
       event.preventDefault(); // Impede o envio imediato do formulário
+
+      // Captura os valores dos campos
       const selectedDate = document.getElementById("date").value;
       const selectedTime = document.getElementById("time").value;
       const selectedRegion = document.getElementById("region").value;
+      const nome = document.getElementById("nome").value;
+      const email = document.getElementById("email").value;
+      const telefone = document.getElementById("telefone").value;
+      const cpf = document.getElementById("cpf").value;
+      const areaAtuacao = document.getElementById("areaAtuacao").value;
 
       // Verifica se todos os campos foram preenchidos
-      if (!selectedDate || !selectedTime || !document.getElementById("nome").value || 
-          !document.getElementById("email").value || !document.getElementById("telefone").value || 
-          !selectedRegion || !document.getElementById("cpf").value || !document.getElementById("areaAtuacao").value) {
+      if (!selectedDate || !selectedTime || !nome || !email || !telefone || !selectedRegion || !cpf || !areaAtuacao) {
         alert("Preencha todos os campos!");
         return;
       }
 
-      // Consulte os horários disponíveis via Google Sheets (considerando a região)
+      // Consulta os horários disponíveis via Google Sheets (considerando a região)
       const availableTimes = await fetchAvailableTimes(selectedDate, selectedRegion);
 
       // Verifica se o horário está disponível
@@ -66,17 +71,17 @@
         return;
       }
 
-      // Preencha os campos ocultos do formulário Google Forms
+      // Preenche os campos ocultos do formulário Google Forms
       document.getElementById("formDate").value = selectedDate;
       document.getElementById("formTime").value = selectedTime;
-      document.getElementById("formNome").value = document.getElementById("nome").value;
-      document.getElementById("formEmail").value = document.getElementById("email").value;
-      document.getElementById("formTelefone").value = document.getElementById("telefone").value;
+      document.getElementById("formNome").value = nome;
+      document.getElementById("formEmail").value = email;
+      document.getElementById("formTelefone").value = telefone;
       document.getElementById("formRegion").value = selectedRegion;
-      document.getElementById("formCPF").value = document.getElementById("cpf").value;
-      document.getElementById("formAreaAtuacao").value = document.getElementById("areaAtuacao").value;
+      document.getElementById("formCPF").value = cpf;
+      document.getElementById("formAreaAtuacao").value = areaAtuacao;
 
-      // Envie o formulário HTML nativo
+      // Envia o formulário oculto
       document.getElementById("googleForm").submit();
     }
 
