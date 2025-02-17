@@ -91,14 +91,14 @@
 
       // Prepara os dados para envio ao Google Forms
       const formData = new FormData();
-      formData.append("662316999", selectedDate); // Substitua pelo ID real do campo de Data
-      formData.append("900855182", selectedTime); // Substitua pelo ID real do campo de Horário
-      formData.append("1826372177", document.getElementById("nome").value); // Substitua pelo ID real do campo de Nome
-      formData.append("241846591", document.getElementById("email").value); // Substitua pelo ID real do campo de E-mail
-      formData.append("1685976361", document.getElementById("telefone").value); // Substitua pelo ID real do campo de Telefone
-      formData.append("98365443", selectedRegion); // Substitua pelo ID real do campo de Região
-      formData.append("367033788", document.getElementById("cpf").value); // Substitua pelo ID real do campo de CPF
-      formData.append("590980463", document.getElementById("areaAtuacao").value); // Substitua pelo ID real do campo de Área de Atuação
+      formData.append("entry.662316999", selectedDate); // Substitua pelo ID real do campo de Data
+      formData.append("entry.900855182", selectedTime); // Substitua pelo ID real do campo de Horário
+      formData.append("entry.1826372177", document.getElementById("nome").value); // Substitua pelo ID real do campo de Nome
+      formData.append("entry.241846591", document.getElementById("email").value); // Substitua pelo ID real do campo de E-mail
+      formData.append("entry.1685976361", document.getElementById("telefone").value); // Substitua pelo ID real do campo de Telefone
+      formData.append("entry.98365443", selectedRegion); // Substitua pelo ID real do campo de Região
+      formData.append("entry.367033788", document.getElementById("cpf").value); // Substitua pelo ID real do campo de CPF
+      formData.append("entry.590980463", document.getElementById("areaAtuacao").value); // Substitua pelo ID real do campo de Área de Atuação
 
       // Envia os dados diretamente para o Google Forms
       const googleFormsUrl = "https://docs.google.com/forms/d/e/SEU_FORMULARIO_GOOGLE_FORMS/formResponse"; // Substitua pela URL do seu Google Forms
