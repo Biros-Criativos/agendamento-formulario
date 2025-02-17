@@ -89,18 +89,38 @@
         return;
       }
 
-      // Preenche os campos ocultos do formulário Google Forms
-      document.getElementById("formDate").value = selectedDate;
-      document.getElementById("formTime").value = selectedTime;
-      document.getElementById("formNome").value = document.getElementById("nome").value;
-      document.getElementById("formEmail").value = document.getElementById("email").value;
-      document.getElementById("formTelefone").value = document.getElementById("telefone").value;
-      document.getElementById("formRegion").value = selectedRegion;
-      document.getElementById("formCpf").value = document.getElementById("cpf").value;
-      document.getElementById("formAreaAtuacao").value = document.getElementById("areaAtuacao").value;
+      // Prepara os dados para envio ao Google Forms
+      const formData = new FormData();
+      formData.append("662316999", selectedDate); // Substitua pelo ID real do campo de Data
+      formData.append("900855182", selectedTime); // Substitua pelo ID real do campo de Horário
+      formData.append("1826372177", document.getElementById("nome").value); // Substitua pelo ID real do campo de Nome
+      formData.append("241846591", document.getElementById("email").value); // Substitua pelo ID real do campo de E-mail
+      formData.append("1685976361", document.getElementById("telefone").value); // Substitua pelo ID real do campo de Telefone
+      formData.append("98365443", selectedRegion); // Substitua pelo ID real do campo de Região
+      formData.append("367033788", document.getElementById("cpf").value); // Substitua pelo ID real do campo de CPF
+      formData.append("590980463", document.getElementById("areaAtuacao").value); // Substitua pelo ID real do campo de Área de Atuação
 
-      // Envia o formulário HTML nativo
-      document.getElementById("googleForm").submit();
+      // Envia os dados diretamente para o Google Forms
+      const googleFormsUrl = "https://docs.google.com/forms/d/e/SEU_FORMULARIO_GOOGLE_FORMS/formResponse"; // Substitua pela URL do seu Google Forms
+      try {
+        const response = await fetch(googleFormsUrl, {
+          method: "POST",
+          body: new URLSearchParams(formData),
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        });
+
+        if (response.ok) {
+          alert("Agendamento realizado com sucesso!");
+          window.location.reload(); // Recarrega a página após o envio
+        } else {
+          alert("Ocorreu um erro ao enviar o formulário. Tente novamente mais tarde.");
+        }
+      } catch (error) {
+        console.error("Erro ao enviar os dados:", error);
+        alert("Ocorreu um erro ao enviar o formulário. Tente novamente mais tarde.");
+      }
     }
   </script>
 </head>
@@ -163,18 +183,6 @@
     </select><br><br>
 
     <button type="submit">Enviar</button>
-  </form>
-  
-  <!-- Formulário oculto para enviar dados ao Google Forms -->
-  <form id="googleForm" action="https://docs.google.com/forms/d/e/1FAIpQLSdOwhfhYI6YX4V0koslR5jhCWN4-CiMrUHCu7u0bSpx-JPcOw/formResponse" method="POST" target="_self" style="display: none;">
-    <input type="hidden" name="entry.662316999" id="formDate"> <!-- ID do campo de Data -->
-    <input type="hidden" name="entry.900855182" id="formTime"> <!-- ID do campo de Horário -->
-    <input type="hidden" name="entry.1826372177" id="formNome"> <!-- ID do campo de Nome -->
-    <input type="hidden" name="entry.241846591" id="formEmail"> <!-- ID do campo de E-mail -->
-    <input type="hidden" name="entry.1685976361" id="formTelefone"> <!-- ID do campo de Telefone -->
-    <input type="hidden" name="entry.98365443" id="formRegion"> <!-- ID do campo de Região (substitua pelo ID correto) -->
-    <input type="hidden" name="entry.367033788" id="formCpf"> <!-- ID do campo de CPF (substitua pelo ID correto) -->
-    <input type="hidden" name="entry.590980463" id="formAreaAtuacao"> <!-- ID do campo de Área de Atuação (substitua pelo ID correto) -->
   </form>
 </body>
 </html>
