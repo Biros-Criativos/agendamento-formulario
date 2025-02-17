@@ -44,7 +44,7 @@
   <script>
     // Função para consultar horários disponíveis via Web App
     async function fetchAvailableTimes(date) {
-      const webAppUrl = "https://script.google.com/macros/s/AKfycbxA_B_zv3wrsMHr7MFRd9gdwksc-anCR8ErxGfzsUb-hPdHFp7NkfGUdYe4tmvBeWBgWQ/exec"; // Substitua pela URL do seu Web App
+      const webAppUrl = "https://script.google.com/macros/s/AKfycby-7vVwSZZruli-Qn5_HajxR4KgqDhZMjkzVhsV-mvknB2XkvF2KJY86eGaxnNReV9O/exec"; // Substitua pela URL do seu Web App
       const response = await fetch(webAppUrl);
       const bookedSlots = await response.json();
       // Lista de todos os horários possíveis
