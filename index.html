@@ -41,61 +41,6 @@
       background-color: #0056b3;
     }
   </style>
-  <script>
-  async function validateAndSubmit(event) {
-    event.preventDefault(); // Impede o envio imediato do formulário
-
-    // Captura os valores dos campos
-    const selectedDate = document.getElementById("date").value;
-    const selectedTime = document.getElementById("time").value;
-    const selectedRegion = document.getElementById("region").value;
-    const nome = document.getElementById("nome").value;
-    const email = document.getElementById("email").value;
-    const telefone = document.getElementById("telefone").value;
-    const cpf = document.getElementById("cpf").value;
-    const areaAtuacao = document.getElementById("areaAtuacao").value;
-
-    // Verifica se todos os campos foram preenchidos
-    if (!selectedDate || !selectedTime || !nome || !email || !telefone || !selectedRegion || !cpf || !areaAtuacao) {
-      alert("Preencha todos os campos!");
-      return;
-    }
-
-    // URL do Web App (INSIRA AQUI A URL DO SEU WEB APP)
-    const webAppUrl = "https://script.google.com/macros/s/AKfycbzbzakiFUc6FnXvxcNQ1B7svQKd5MmEZxzmLXXfZ1DsBGLzfl2kE4G-pxEwJLk2HY2odg/exec";
-
-    // Dados a serem enviados ao Web App
-    const formData = {
-      nome: nome,
-      email: email,
-      telefone: telefone,
-      cpf: cpf,
-      areaAtuacao: areaAtuacao,
-      region: selectedRegion,
-      date: selectedDate,
-      time: selectedTime
-    };
-
-    try {
-      // Envia os dados ao Web App
-      const response = await fetch(webAppUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ formData: formData })
-      });
-
-      // Lê a resposta do Web App
-      const result = await response.text();
-
-      // Exibe a mensagem de sucesso ou erro
-      alert(result);
-    } catch (error) {
-      alert("Erro ao enviar o formulário. Tente novamente mais tarde.");
-    }
-  }
-</script>
 </head>
 <body>
   <h1>Agendamento da Consultoria</h1>
@@ -161,6 +106,56 @@
     <input type="hidden" name="entry.900855182" id="formTime"> <!-- ID do campo de Horário -->
     <input type="hidden" name="entry.98365443" id="formRegion"> <!-- ID do campo de Região -->
   </form>
+
+  <script>
+    async function validateAndSubmit(event) {
+      event.preventDefault(); // Impede o envio imediato do formulário
+
+      // Captura os valores dos campos
+      const selectedDate = document.getElementById("date").value;
+      const selectedTime = document.getElementById("time").value;
+      const selectedRegion = document.getElementById("region").value;
+
+      // Verifica se todos os campos foram preenchidos
+      if (!selectedDate || !selectedTime || !selectedRegion) {
+        alert("Preencha todos os campos!");
+        return;
+      }
+
+      // URL do Web App
+      const webAppUrl = "https://script.google.com/macros/s/AKfycby6TPIw_6eM_cDm2kfR_1wPDgU4Epj41OgU0UAbO3Gzp9kFTDRg-NF2IZc53hX-8Au1cw/exec";
+
+      try {
+        // Consulta o Web App para verificar disponibilidade
+        const response = await fetch(webAppUrl);
+        const bookedSlots = await response.json();
+
+        // Verifica se o horário está disponível
+        const isDuplicate = bookedSlots.some(slot => 
+          slot.date === selectedDate && slot.time === selectedTime && slot.region === selectedRegion
+        );
+
+        if (isDuplicate) {
+          alert("Este horário já está agendado para esta região. Escolha outro.");
+          return;
+        }
+
+        // Preenche os campos ocultos do formulário Google Forms
+        document.getElementById("formNome").value = document.getElementById("nome").value;
+        document.getElementById("formEmail").value = document.getElementById("email").value;
+        document.getElementById("formTelefone").value = document.getElementById("telefone").value;
+        document.getElementById("formCPF").value = document.getElementById("cpf").value;
+        document.getElementById("formAreaAtuacao").value = document.getElementById("areaAtuacao").value;
+        document.getElementById("formDate").value = selectedDate;
+        document.getElementById("formTime").value = selectedTime;
+        document.getElementById("formRegion").value = selectedRegion;
+
+        // Envia o formulário oculto
+        document.getElementById("googleForm").submit();
+      } catch (error) {
+        alert(`Erro inesperado: ${error.message}`);
+      }
+    }
+  </script>
 </body>
 </html>
-
