@@ -141,8 +141,8 @@
       const selectedRegion = document.getElementById("region").value;
 
       // URL do Web App
-      const webAppUrl = `https://script.google.com/macros/s/AKfycbxP4WAee6xOssnX2i5Cjdlz3vxi22__2iqFb-8RwqfHS4D5gO3YaBjEUkSeUcRDOBiq_Q/exec?date=${encodeURIComponent(selectedDate)}&time=${encodeURIComponent(selectedTime)}&region=${encodeURIComponent(selectedRegion)}`;
-
+      const webAppUrl = `https://script.google.com/macros/s/AKfycby_dcke2eMsxL8c6zSJpQuyGlPL-HGkYRcU1WiFJP7pkgzL8LZliF-ChlRszfskXRtL8g/exec?date=${encodeURIComponent(selectedDate)}&time=${encodeURIComponent(selectedTime)}&region=${encodeURIComponent(selectedRegion)}`;
+      
       try {
         // Consulta o Web App
         const response = await fetch(webAppUrl);
