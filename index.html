@@ -139,13 +139,22 @@
     function validateWeekday() {
       const selectedDate = document.getElementById("date").value;
 
-      // Verifica se a data está completa (AAAA-MM-DD)
-      if (!selectedDate || selectedDate.length !== 10) {
+      // Verifica se a data está completa (AAAA-MM-DD ou DD/MM/AAAA)
+      if (!selectedDate || selectedDate.length < 10) {
         return; // Sai se a data estiver incompleta
       }
 
+      // Converte a data para o formato AAAA-MM-DD, se necessário
+      let formattedDate = selectedDate;
+      if (selectedDate.includes("/")) {
+        const [day, month, year] = selectedDate.split("/");
+        formattedDate = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+      }
+
+      console.log("Data formatada:", formattedDate); // Log para depuração
+
       // Converte a data para um objeto Date
-      const dateObj = new Date(selectedDate);
+      const dateObj = new Date(formattedDate);
 
       // Verifica se a data é válida
       if (isNaN(dateObj.getTime())) {
