@@ -81,7 +81,7 @@
   <form id="customForm" onsubmit="validateAndRedirect(event)">
     <!-- Campos do formulário -->
     <label for="date">Data:</label>
-    <input type="date" id="date" required onchange="validateWeekday()"><br><br>
+    <input type="date" id="date" required onblur="validateWeekday()"><br><br>
     
     <label for="time">Horário:</label>
     <select id="time" required>
@@ -139,8 +139,9 @@
     function validateWeekday() {
       const selectedDate = document.getElementById("date").value;
 
-      // Verifica se a data está completa (AAAA-MM-DD ou DD/MM/AAAA)
-      if (!selectedDate || selectedDate.length < 10) {
+      // Verifica se a data está completa (AAAA-MM-DD)
+      if (!selectedDate || selectedDate.length !== 10) {
+        console.log("Data incompleta:", selectedDate); // Log para depuração
         return; // Sai se a data estiver incompleta
       }
 
@@ -158,6 +159,7 @@
 
       // Verifica se a data é válida
       if (isNaN(dateObj.getTime())) {
+        console.log("Data inválida:", formattedDate); // Log para depuração
         alert("Data inválida. Por favor, selecione uma data válida.");
         document.getElementById("date").value = ""; // Limpa o campo
         return;
@@ -165,6 +167,8 @@
 
       // Obtém o dia da semana (0 = domingo, 6 = sábado)
       const dayOfWeek = dateObj.getDay();
+
+      console.log("Dia da semana:", dayOfWeek); // Log para depuração
 
       // Verifica se é fim de semana
       if (dayOfWeek === 0 || dayOfWeek === 6) {
