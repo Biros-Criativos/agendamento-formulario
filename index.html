@@ -81,7 +81,8 @@
   <form id="customForm" onsubmit="validateAndRedirect(event)">
     <!-- Campos do formulário -->
     <label for="date">Data:</label>
-    <input type="date" id="date" required><br><br>
+    <input type="date" id="date" required onchange="validateWeekday()"><br><br> <!-- Alteração feita aqui -->
+    
     <label for="time">Horário:</label>
     <select id="time" required>
       <option value="">Selecione um horário</option>
@@ -95,6 +96,7 @@
       <option value="16:00">16:00</option>
       <option value="17:00">17:00</option>
     </select><br><br>
+    
     <label for="region">Região:</label>
     <select id="region" required>
       <option value="">Selecione uma região</option>
@@ -102,25 +104,11 @@
       <option value="Cabedelo">Cabedelo</option>
       <option value="Cajazeiras">Cajazeiras</option>
       <option value="Campina Grande">Campina Grande</option>
-      <option value="Catolé do Rocha">Catolé do Rocha</option>
-      <option value="Cuité">Cuité</option>
-      <option value="Esperança">Esperança</option>
-      <option value="Guarabira">Guarabira</option>
-      <option value="Itabaiana">Itabaiana</option>
-      <option value="Itaporanga">Itaporanga</option>
-      <option value="Monteiro">Monteiro</option>
-      <option value="Pedras de Fogo">Pedras de Fogo</option>
-      <option value="Picuí">Picuí</option>
-      <option value="Pombal">Pombal</option>
-      <option value="Princesa Isabel">Princesa Isabel</option>
-      <option value="Santa Luzia">Santa Luzia</option>
-      <option value="Santa Rita">Santa Rita</option>
-      <option value="Sousa">Sousa</option>
-      <option value="Sumé">Sumé</option>
       <option value="Soledade">Soledade</option>
       <option value="João Pessoa">João Pessoa</option>
       <option value="Patos">Patos</option>
     </select><br><br>
+    
     <button type="submit">Verificar Disponibilidade</button>
   </form>
 
@@ -132,6 +120,20 @@
   </div>
 
   <script>
+    // Função para validar se a data é um dia útil (segunda a sexta)
+    function validateWeekday() {
+      const selectedDate = document.getElementById("date").value;
+      if (!selectedDate) return; // Sai se o campo estiver vazio
+
+      const dateObj = new Date(selectedDate);
+      const dayOfWeek = dateObj.getDay(); // 0 = domingo, 6 = sábado
+
+      if (dayOfWeek === 0 || dayOfWeek === 6) {
+        alert("Por favor, selecione uma data de dia útil (segunda a sexta).");
+        document.getElementById("date").value = ""; // Limpa o campo
+      }
+    }
+
     async function validateAndRedirect(event) {
       event.preventDefault(); // Impede o envio imediato do formulário
 
@@ -142,7 +144,7 @@
 
       // URL do Web App
       const webAppUrl = `https://script.google.com/macros/s/AKfycby_dcke2eMsxL8c6zSJpQuyGlPL-HGkYRcU1WiFJP7pkgzL8LZliF-ChlRszfskXRtL8g/exec?date=${encodeURIComponent(selectedDate)}&time=${encodeURIComponent(selectedTime)}&region=${encodeURIComponent(selectedRegion)}`;
-      
+
       try {
         // Consulta o Web App
         const response = await fetch(webAppUrl);
