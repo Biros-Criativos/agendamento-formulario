@@ -81,7 +81,7 @@
   <form id="customForm" onsubmit="validateAndRedirect(event)">
     <!-- Campos do formulário -->
     <label for="date">Data:</label>
-    <input type="date" id="date" required onblur="validateWeekday()"><br><br>
+    <input type="date" id="date" required oninput="validateWeekday()"><br><br>
     
     <label for="time">Horário:</label>
     <select id="time" required>
@@ -145,21 +145,12 @@
         return; // Sai se a data estiver incompleta
       }
 
-      // Converte a data para o formato AAAA-MM-DD, se necessário
-      let formattedDate = selectedDate;
-      if (selectedDate.includes("/")) {
-        const [day, month, year] = selectedDate.split("/");
-        formattedDate = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
-      }
-
-      console.log("Data formatada:", formattedDate); // Log para depuração
-
       // Converte a data para um objeto Date
-      const dateObj = new Date(formattedDate);
+      const dateObj = new Date(selectedDate);
 
       // Verifica se a data é válida
       if (isNaN(dateObj.getTime())) {
-        console.log("Data inválida:", formattedDate); // Log para depuração
+        console.log("Data inválida:", selectedDate); // Log para depuração
         alert("Data inválida. Por favor, selecione uma data válida.");
         document.getElementById("date").value = ""; // Limpa o campo
         return;
@@ -184,6 +175,12 @@
       const selectedDate = document.getElementById("date").value;
       const selectedTime = document.getElementById("time").value;
       const selectedRegion = document.getElementById("region").value;
+
+      // Verifica se todos os campos foram preenchidos
+      if (!selectedDate || !selectedTime || !selectedRegion) {
+        alert("Preencha todos os campos!");
+        return;
+      }
 
       // URL do Web App
       const webAppUrl = `https://script.google.com/macros/s/AKfycby_dcke2eMsxL8c6zSJpQuyGlPL-HGkYRcU1WiFJP7pkgzL8LZliF-ChlRszfskXRtL8g/exec?date=${encodeURIComponent(selectedDate)}&time=${encodeURIComponent(selectedTime)}&region=${encodeURIComponent(selectedRegion)}`;
