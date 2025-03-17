@@ -74,14 +74,28 @@
       background-color: rgba(0, 0, 0, 0.5);
       z-index: 999;
     }
+    .info-message {
+      text-align: center;
+      color: #ff0000;
+      margin-bottom: 20px;
+      font-size: 16px;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
   <h1>Agendamento da Consultoria</h1>
+  
+  <!-- Mensagem de Informação -->
+  <div class="info-message">
+    De segunda a sexta
+  </div>
+  
   <form id="customForm" onsubmit="validateAndRedirect(event)">
     <!-- Campos do formulário -->
     <label for="date">Data:</label>
     <input type="date" id="date" required><br><br>
+    
     <label for="time">Horário:</label>
     <select id="time" required>
       <option value="">Selecione um horário</option>
@@ -95,6 +109,7 @@
       <option value="16:00">16:00</option>
       <option value="17:00">17:00</option>
     </select><br><br>
+    
     <label for="region">Região:</label>
     <select id="region" required>
       <option value="">Selecione uma região</option>
@@ -121,6 +136,7 @@
       <option value="João Pessoa">João Pessoa</option>
       <option value="Patos">Patos</option>
     </select><br><br>
+    
     <button type="submit">Verificar Disponibilidade</button>
   </form>
 
@@ -140,8 +156,14 @@
       const selectedTime = document.getElementById("time").value;
       const selectedRegion = document.getElementById("region").value;
 
+      // Verifica se todos os campos foram preenchidos
+      if (!selectedDate || !selectedTime || !selectedRegion) {
+        alert("Preencha todos os campos!");
+        return;
+      }
+
       // URL do Web App
-      const webAppUrl = `https://script.google.com/macros/s/AKfycbz96dHJ9d4ftnZL4Zcf47HFl_SCqLTZbBe8F8WWpIsVRDq4CMeC9FJrUicK-JM_OsCfug/exec?date=${encodeURIComponent(selectedDate)}&time=${encodeURIComponent(selectedTime)}&region=${encodeURIComponent(selectedRegion)}`;
+      const webAppUrl = `https://script.google.com/macros/s/AKfycby_dcke2eMsxL8c6zSJpQuyGlPL-HGkYRcU1WiFJP7pkgzL8LZliF-ChlRszfskXRtL8g/exec?date=${encodeURIComponent(selectedDate)}&time=${encodeURIComponent(selectedTime)}&region=${encodeURIComponent(selectedRegion)}`;
       
       try {
         // Consulta o Web App
@@ -182,4 +204,3 @@
   </script>
 </body>
 </html>
-
