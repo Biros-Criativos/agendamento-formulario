@@ -74,42 +74,22 @@
       background-color: rgba(0, 0, 0, 0.5);
       z-index: 999;
     }
-    .info-message {
-      text-align: center;
-      color: #ff0000;
-      margin-bottom: 20px;
-      font-size: 18px;
-      font-weight: bold;
-    }
   </style>
 </head>
 <body>
   <h1>Agendamento da Consultoria</h1>
-  
-  <!-- Mensagem de Informação -->
-  <div class="info-message">
-    (De segunda a sexta)
-  </div>
-  
   <form id="customForm" onsubmit="validateAndRedirect(event)">
     <!-- Campos do formulário -->
     <label for="date">Data:</label>
     <input type="date" id="date" required><br><br>
-    
     <label for="time">Horário:</label>
     <select id="time" required>
       <option value="">Selecione um horário</option>
-      <option value="08:00">08:00</option>
-      <option value="09:00">09:00</option>
+      <option value="8:00">8:00</option>
+      <option value="9:00">9:00</option>
       <option value="10:00">10:00</option>
       <option value="11:00">11:00</option>
-      <option value="13:00">13:00</option>
-      <option value="14:00">14:00</option>
-      <option value="15:00">15:00</option>
-      <option value="16:00">16:00</option>
-      <option value="17:00">17:00</option>
     </select><br><br>
-    
     <label for="region">Região:</label>
     <select id="region" required>
       <option value="">Selecione uma região</option>
@@ -123,20 +103,19 @@
       <option value="Guarabira">Guarabira</option>
       <option value="Itabaiana">Itabaiana</option>
       <option value="Itaporanga">Itaporanga</option>
+      <option value="João Pessoa">João Pessoa</option>
       <option value="Monteiro">Monteiro</option>
+      <option value="Patos">Patos</option>
       <option value="Pedras de Fogo">Pedras de Fogo</option>
       <option value="Picuí">Picuí</option>
       <option value="Pombal">Pombal</option>
       <option value="Princesa Isabel">Princesa Isabel</option>
       <option value="Santa Luzia">Santa Luzia</option>
       <option value="Santa Rita">Santa Rita</option>
+      <option value="Soledade">Soledade</option>
       <option value="Sousa">Sousa</option>
       <option value="Sumé">Sumé</option>
-      <option value="Soledade">Soledade</option>
-      <option value="João Pessoa">João Pessoa</option>
-      <option value="Patos">Patos</option>
     </select><br><br>
-    
     <button type="submit">Verificar Disponibilidade</button>
   </form>
 
@@ -164,7 +143,7 @@
 
       // URL do Web App
       const webAppUrl = `https://script.google.com/macros/s/AKfycbwgAg5ymie_AKPXBgQJo0IdDYC3JZHe7FC8Ko53ZTdGRziCIbC_emSokITq5sUI_Bz-hA/exec?date=${encodeURIComponent(selectedDate)}&time=${encodeURIComponent(selectedTime)}&region=${encodeURIComponent(selectedRegion)}`;
-      
+
       try {
         // Consulta o Web App
         const response = await fetch(webAppUrl);
