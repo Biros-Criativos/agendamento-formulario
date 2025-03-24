@@ -110,12 +110,13 @@
         }
         const result = await response.json();
 
+        // Verifica a resposta do servidor
         if (result.success) {
           // Redireciona para o Google Forms
           window.location.href = result.redirectUrl;
         } else {
           // Exibe a mensagem de erro
-          alert(result.message);
+          alert(result.message || "Erro desconhecido.");
         }
       } catch (error) {
         alert(`Erro inesperado: ${error.message}`);
