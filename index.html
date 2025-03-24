@@ -61,26 +61,8 @@
       <option value="">Selecione uma região</option>
       <option value="Areia">Areia</option>
       <option value="Cabedelo">Cabedelo</option>
-      <option value="Cajazeiras">Cajazeiras</option>
-      <option value="Campina Grande">Campina Grande</option>
-      <option value="Catolé do Rocha">Catolé do Rocha</option>
-      <option value="Cuité">Cuité</option>
-      <option value="Esperança">Esperança</option>
-      <option value="Guarabira">Guarabira</option>
-      <option value="Itabaiana">Itabaiana</option>
-      <option value="Itaporanga">Itaporanga</option>
       <option value="João Pessoa">João Pessoa</option>
-      <option value="Monteiro">Monteiro</option>
-      <option value="Patos">Patos</option>
-      <option value="Pedras de Fogo">Pedras de Fogo</option>
-      <option value="Picuí">Picuí</option>
-      <option value="Pombal">Pombal</option>
-      <option value="Princesa Isabel">Princesa Isabel</option>
-      <option value="Santa Luzia">Santa Luzia</option>
-      <option value="Santa Rita">Santa Rita</option>
-      <option value="Soledade">Soledade</option>
-      <option value="Sousa">Sousa</option>
-      <option value="Sumé">Sumé</option>
+      <!-- Outras regiões -->
     </select><br><br>
     <button type="submit">Verificar Disponibilidade</button>
   </form>
@@ -101,11 +83,20 @@
       }
 
       // URL do Web App
-      const webAppUrl = `https://script.google.com/macros/s/AKfycbxM3FXv258qAOge4lw_VoK8Ezb8rPtOBjgfjuSUMhaLQzSjk1AAxqXyJFqZsWzu9-u4eA/exec?date=${encodeURIComponent(selectedDate)}&time=${encodeURIComponent(selectedTime)}&region=${encodeURIComponent(selectedRegion)}`;
+      const webAppUrl = `https://script.google.com/macros/s/AKfycby85J5cjvUviuvqT5cRCZgcOwpg_vIaWTG7H5-VaDGXPmcod3R1TDFcFYf3ZoQ7vZmRjw/exec?date=${encodeURIComponent(selectedDate)}&time=${encodeURIComponent(selectedTime)}&region=${encodeURIComponent(selectedRegion)}`;
 
       try {
-        // Redireciona o usuário para o Web App
-        window.location.href = webAppUrl;
+        // Faz a requisição ao Web App
+        const response = await fetch(webAppUrl);
+        const result = await response.json();
+
+        if (result.success) {
+          // Redireciona para o Google Forms
+          window.location.href = result.redirectUrl;
+        } else {
+          // Exibe a mensagem de erro
+          alert(result.message);
+        }
       } catch (error) {
         alert(`Erro inesperado: ${error.message}`);
       }
