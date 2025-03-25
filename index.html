@@ -40,20 +40,60 @@
     button:hover {
       background-color: #0056b3;
     }
+    .dialog {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+    }
+    .dialog-message {
+      margin-bottom: 16px;
+    }
+    .dialog-button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
   </style>
 </head>
 <body>
   <h1>Agendamento da Consultoria</h1>
   <form id="customForm" onsubmit="validateAndRedirect(event)">
+    <!-- Campos do formulário -->
     <label for="date">Data:</label>
     <input type="date" id="date" required><br><br>
     <label for="time">Horário:</label>
     <select id="time" required>
       <option value="">Selecione um horário</option>
-      <option value="8:00">8:00</option>
-      <option value="9:00">9:00</option>
+      <option value="08:00">08:00</option>
+      <option value="09:00">09:00</option>
       <option value="10:00">10:00</option>
       <option value="11:00">11:00</option>
+      <option value="13:00">13:00</option>
+      <option value="14:00">14:00</option>
+      <option value="15:00">15:00</option>
+      <option value="16:00">16:00</option>
+      <option value="17:00">17:00</option>
     </select><br><br>
     <label for="region">Região:</label>
     <select id="region" required>
@@ -68,21 +108,28 @@
       <option value="Guarabira">Guarabira</option>
       <option value="Itabaiana">Itabaiana</option>
       <option value="Itaporanga">Itaporanga</option>
-      <option value="João Pessoa">João Pessoa</option>
       <option value="Monteiro">Monteiro</option>
-      <option value="Patos">Patos</option>
       <option value="Pedras de Fogo">Pedras de Fogo</option>
       <option value="Picuí">Picuí</option>
       <option value="Pombal">Pombal</option>
       <option value="Princesa Isabel">Princesa Isabel</option>
       <option value="Santa Luzia">Santa Luzia</option>
       <option value="Santa Rita">Santa Rita</option>
-      <option value="Soledade">Soledade</option>
       <option value="Sousa">Sousa</option>
       <option value="Sumé">Sumé</option>
+      <option value="Soledade">Soledade</option>
+      <option value="João Pessoa">João Pessoa</option>
+      <option value="Patos">Patos</option>
     </select><br><br>
     <button type="submit">Verificar Disponibilidade</button>
   </form>
+
+  <!-- Caixa de Diálogo -->
+  <div class="overlay" id="overlay"></div>
+  <div class="dialog" id="dialog">
+    <div class="dialog-message" id="dialogMessage"></div>
+    <button class="dialog-button" onclick="closeDialog()">Fechar</button>
+  </div>
 
   <script>
     async function validateAndRedirect(event) {
@@ -93,35 +140,46 @@
       const selectedTime = document.getElementById("time").value;
       const selectedRegion = document.getElementById("region").value;
 
-      // Verifica se todos os campos foram preenchidos
-      if (!selectedDate || !selectedTime || !selectedRegion) {
-        alert("Preencha todos os campos!");
-        return;
-      }
-
       // URL do Web App
-      const webAppUrl = `https://script.google.com/macros/s/AKfycbya6aKZYsC7D_SsOqy5wI6iG7a9luBwcvbCHjkGr9jsxatMWhIzUfxRQIbRKTb6lXCT1g/exec?date=${encodeURIComponent(selectedDate)}&time=${encodeURIComponent(selectedTime)}&region=${encodeURIComponent(selectedRegion)}`;
-
+      const webAppUrl = `https://script.google.com/macros/s/AKfycby_dcke2eMsxL8c6zSJpQuyGlPL-HGkYRcU1WiFJP7pkgzL8LZliF-ChlRszfskXRtL8g/exec?date=${encodeURIComponent(selectedDate)}&time=${encodeURIComponent(selectedTime)}&region=${encodeURIComponent(selectedRegion)}`;
+      
       try {
-        // Faz a requisição ao Web App
+        // Consulta o Web App
         const response = await fetch(webAppUrl);
-        if (!response.ok) {
-          throw new Error(`Erro HTTP: ${response.status}`);
-        }
         const result = await response.json();
 
-        // Verifica a resposta do servidor
         if (result.success) {
           // Redireciona para o Google Forms
           window.location.href = result.redirectUrl;
         } else {
-          // Exibe a mensagem de erro
-          alert(result.message || "Erro desconhecido.");
+          // Exibe a mensagem de erro na caixa de diálogo
+          showDialog(result.message);
         }
       } catch (error) {
-        alert(`Erro inesperado: ${error.message}`);
+        showDialog(`Erro inesperado: ${error.message}`);
       }
+    }
+
+    // Função para exibir a caixa de diálogo
+    function showDialog(message) {
+      const dialog = document.getElementById("dialog");
+      const overlay = document.getElementById("overlay");
+      const dialogMessage = document.getElementById("dialogMessage");
+
+      dialogMessage.textContent = message;
+      dialog.style.display = "block";
+      overlay.style.display = "block";
+    }
+
+    // Função para fechar a caixa de diálogo
+    function closeDialog() {
+      const dialog = document.getElementById("dialog");
+      const overlay = document.getElementById("overlay");
+
+      dialog.style.display = "none";
+      overlay.style.display = "none";
     }
   </script>
 </body>
 </html>
+
