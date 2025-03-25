@@ -133,34 +133,45 @@
 
   <script>
     async function validateAndRedirect(event) {
-      event.preventDefault(); // Impede o envio imediato do formulário
+  event.preventDefault();
 
-      // Captura os valores dos campos
-      const selectedDate = document.getElementById("date").value;
-      const selectedTime = document.getElementById("time").value;
-      const selectedRegion = document.getElementById("region").value;
+  // Captura os valores dos campos
+  const selectedDate = document.getElementById("date").value;
+  const selectedTime = document.getElementById("time").value;
+  const selectedRegion = document.getElementById("region").value;
 
-      // URL do Web App
-      const webAppUrl = `https://script.google.com/macros/s/AKfycbxvX9l_P9m5ioZsPyLT-m63K4YRZYJ0QIDsEwpvbTmmia_uNLCBu6R6kL_cqc8f_tP--A/exec?date=${encodeURIComponent(selectedDate)}&time=${encodeURIComponent(selectedTime)}&region=${encodeURIComponent(selectedRegion)}`;
+  // Log dos valores capturados
+  console.log('Valores capturados:', {
+    date: selectedDate,
+    time: selectedTime,
+    region: selectedRegion
+  });
 
-      console.log(webAppUrl); // Adicione esta linha antes do fetch
-      
-      try {
-        // Consulta o Web App
-        const response = await fetch(webAppUrl);
-        const result = await response.json();
+  // URL do Web App
+  const webAppUrl = `https://script.google.com/macros/s/AKfycbxvX9l_P9m5ioZsPyLT-m63K4YRZYJ0QIDsEwpvbTmmia_uNLCBu6R6kL_cqc8f_tP--A/exec?date=${encodeURIComponent(selectedDate)}&time=${encodeURIComponent(selectedTime)}&region=${encodeURIComponent(selectedRegion)}`;
 
-        if (result.success) {
-          // Redireciona para o Google Forms
-          window.location.href = result.redirectUrl;
-        } else {
-          // Exibe a mensagem de erro na caixa de diálogo
-          showDialog(result.message);
-        }
-      } catch (error) {
-        showDialog(`Erro inesperado: ${error.message}`);
-      }
+  console.log('URL do Web App:', webAppUrl);
+  
+  try {
+    // Log antes da requisição
+    console.log('Iniciando requisição para o web app...');
+
+    const response = await fetch(webAppUrl);
+    const result = await response.json();
+
+    // Log da resposta
+    console.log('Resposta do web app:', result);
+
+    if (result.success) {
+      window.location.href = result.redirectUrl;
+    } else {
+      showDialog(result.message);
     }
+  } catch (error) {
+    console.error('Erro na requisição:', error);
+    showDialog(`Erro inesperado: ${error.message}`);
+  }
+}
 
     // Função para exibir a caixa de diálogo
     function showDialog(message) {
