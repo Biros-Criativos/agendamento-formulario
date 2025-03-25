@@ -142,6 +142,8 @@
 
       // URL do Web App
       const webAppUrl = `https://script.google.com/macros/s/AKfycbxJtrzKnmmfshBSgKjyM5ls2cMJpi2RA71XQD-Q5azm6PGnfdbqjrJPTbE-ZmeLMVGOhg/exec?date=${encodeURIComponent(selectedDate)}&time=${encodeURIComponent(selectedTime)}&region=${encodeURIComponent(selectedRegion)}`;
+
+      console.log(webAppUrl); // Adicione esta linha antes do fetch
       
       try {
         // Consulta o Web App
