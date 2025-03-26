@@ -1,130 +1,35 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agendamento da Consultoria</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    h1 {
-      text-align: center;
-      color: #333;
-    }
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: bold;
-    }
-    input, select {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 16px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    button {
-      width: 100%;
-      padding: 12px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    .dialog {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: white;
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      z-index: 1000;
-    }
-    .dialog-message {
-      margin-bottom: 16px;
-    }
-    .dialog-button {
-      padding: 10px 20px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 999;
-    }
-  </style>
+  <!-- Mantenha seu head e estilos como está -->
 </head>
 <body>
   <h1>Agendamento da Consultoria</h1>
   <form id="customForm" onsubmit="validateAndRedirect(event)">
-    <!-- Campos do formulário -->
-    <label for="date">Data:</label>
-    <input type="date" id="date" required><br><br>
-    <label for="time">Horário:</label>
-    <select id="time" required>
-      <option value="">Selecione um horário</option>
-      <option value="08:00">08:00</option>
-      <option value="09:00">09:00</option>
-      <option value="10:00">10:00</option>
-      <option value="11:00">11:00</option>
-      <option value="13:00">13:00</option>
-      <option value="14:00">14:00</option>
-      <option value="15:00">15:00</option>
-      <option value="16:00">16:00</option>
-      <option value="17:00">17:00</option>
-    </select><br><br>
+    <!-- Região primeiro -->
     <label for="region">Região:</label>
-    <select id="region" required>
+    <select id="region" required onchange="updateAvailableHours()">
       <option value="">Selecione uma região</option>
       <option value="Areia">Areia</option>
       <option value="Cabedelo">Cabedelo</option>
-      <option value="Cajazeiras">Cajazeiras</option>
-      <option value="Campina Grande">Campina Grande</option>
-      <option value="Catolé do Rocha">Catolé do Rocha</option>
-      <option value="Cuité">Cuité</option>
-      <option value="Esperança">Esperança</option>
-      <option value="Guarabira">Guarabira</option>
-      <option value="Itabaiana">Itabaiana</option>
-      <option value="Itaporanga">Itaporanga</option>
-      <option value="Monteiro">Monteiro</option>
-      <option value="Pedras de Fogo">Pedras de Fogo</option>
-      <option value="Picuí">Picuí</option>
-      <option value="Pombal">Pombal</option>
-      <option value="Princesa Isabel">Princesa Isabel</option>
-      <option value="Santa Luzia">Santa Luzia</option>
-      <option value="Santa Rita">Santa Rita</option>
-      <option value="Sousa">Sousa</option>
-      <option value="Sumé">Sumé</option>
+      <!-- ... mantenha todas as suas opções de região ... -->
       <option value="Soledade">Soledade</option>
       <option value="João Pessoa">João Pessoa</option>
       <option value="Patos">Patos</option>
     </select><br><br>
+
+    <label for="date">Data:</label>
+    <input type="date" id="date" required onclick="checkRegion()"><br><br>
+    
+    <label for="time">Horário:</label>
+    <select id="time" required onclick="checkRegion()">
+      <option value="">Selecione primeiro a região</option>
+    </select><br><br>
+    
     <button type="submit">Verificar Disponibilidade</button>
   </form>
 
-  <!-- Caixa de Diálogo -->
+  <!-- Mantenha sua caixa de diálogo como está -->
   <div class="overlay" id="overlay"></div>
   <div class="dialog" id="dialog">
     <div class="dialog-message" id="dialogMessage"></div>
@@ -132,67 +37,80 @@
   </div>
 
   <script>
+    // Adicione estas novas funções
+    function checkRegion() {
+      const region = document.getElementById('region').value;
+      const timeSelect = document.getElementById('time');
+      const dateInput = document.getElementById('date');
+      
+      if (!region) {
+        alert('Por favor, selecione primeiro a região.');
+        timeSelect.value = '';
+        dateInput.value = '';
+        document.getElementById('region').focus();
+        return false;
+      }
+      return true;
+    }
+
+    function updateAvailableHours() {
+      const region = document.getElementById('region').value;
+      const timeSelect = document.getElementById('time');
+      const dateInput = document.getElementById('date');
+      
+      timeSelect.innerHTML = '<option value="">Selecione um horário</option>';
+      
+      if (!region) {
+        timeSelect.innerHTML = '<option value="">Selecione primeiro a região</option>';
+        timeSelect.value = '';
+        dateInput.value = '';
+        return;
+      }
+      
+      const hours = region === 'Soledade' 
+        ? ['13:00', '14:00', '15:00', '16:00', '17:00']
+        : ['08:00', '09:00', '10:00', '11:00'];
+      
+      hours.forEach(hour => {
+        const option = document.createElement('option');
+        option.value = hour;
+        option.textContent = hour;
+        timeSelect.appendChild(option);
+      });
+    }
+
+    // Adicione os eventos quando a página carregar
+    document.addEventListener('DOMContentLoaded', function() {
+      const timeSelect = document.getElementById('time');
+      const dateInput = document.getElementById('date');
+      
+      timeSelect.addEventListener('mousedown', function(event) {
+        if (!checkRegion()) {
+          event.preventDefault();
+        }
+      });
+      
+      dateInput.addEventListener('mousedown', function(event) {
+        if (!checkRegion()) {
+          event.preventDefault();
+        }
+      });
+      
+      updateAvailableHours();
+    });
+
+    // Mantenha suas funções existentes
     async function validateAndRedirect(event) {
-  event.preventDefault();
-
-  // Captura os valores dos campos
-  const selectedDate = document.getElementById("date").value;
-  const selectedTime = document.getElementById("time").value;
-  const selectedRegion = document.getElementById("region").value;
-
-  // Log dos valores capturados
-  console.log('Valores capturados:', {
-    date: selectedDate,
-    time: selectedTime,
-    region: selectedRegion
-  });
-
-  // URL do Web App
-  const webAppUrl = `https://script.google.com/macros/s/AKfycbwhYVlVEBfh-BOhR-iaAXn1e7tU9t1MzQ1OcDCjfF7LZa5hjbdlmYvZHCgDHeczAc-3fQ/exec?date=${encodeURIComponent(selectedDate)}&time=${encodeURIComponent(selectedTime)}&region=${encodeURIComponent(selectedRegion)}`;
-
-  console.log('URL do Web App:', webAppUrl);
-  
-  try {
-    // Log antes da requisição
-    console.log('Iniciando requisição para o web app...');
-
-    const response = await fetch(webAppUrl);
-    const result = await response.json();
-
-    // Log da resposta
-    console.log('Resposta do web app:', result);
-
-    if (result.success) {
-      window.location.href = result.redirectUrl;
-    } else {
-      showDialog(result.message);
+      // ... seu código existente ...
     }
-  } catch (error) {
-    console.error('Erro na requisição:', error);
-    showDialog(`Erro inesperado: ${error.message}`);
-  }
-}
 
-    // Função para exibir a caixa de diálogo
     function showDialog(message) {
-      const dialog = document.getElementById("dialog");
-      const overlay = document.getElementById("overlay");
-      const dialogMessage = document.getElementById("dialogMessage");
-
-      dialogMessage.textContent = message;
-      dialog.style.display = "block";
-      overlay.style.display = "block";
+      // ... seu código existente ...
     }
 
-    // Função para fechar a caixa de diálogo
     function closeDialog() {
-      const dialog = document.getElementById("dialog");
-      const overlay = document.getElementById("overlay");
-
-      dialog.style.display = "none";
-      overlay.style.display = "none";
+      // ... seu código existente ...
     }
   </script>
 </body>
 </html>
-
