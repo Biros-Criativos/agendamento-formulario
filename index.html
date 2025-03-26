@@ -80,23 +80,8 @@
   <h1>Agendamento da Consultoria</h1>
   <form id="customForm" onsubmit="validateAndRedirect(event)">
     <!-- Campos do formulário -->
-    <label for="date">Data:</label>
-    <input type="date" id="date" required><br><br>
-    <label for="time">Horário:</label>
-    <select id="time" required>
-      <option value="">Selecione um horário</option>
-      <option value="08:00">08:00</option>
-      <option value="09:00">09:00</option>
-      <option value="10:00">10:00</option>
-      <option value="11:00">11:00</option>
-      <option value="13:00">13:00</option>
-      <option value="14:00">14:00</option>
-      <option value="15:00">15:00</option>
-      <option value="16:00">16:00</option>
-      <option value="17:00">17:00</option>
-    </select><br><br>
     <label for="region">Região:</label>
-    <select id="region" required>
+    <select id="region" required onchange="updateAvailableHours()">
       <option value="">Selecione uma região</option>
       <option value="Areia">Areia</option>
       <option value="Cabedelo">Cabedelo</option>
@@ -121,6 +106,15 @@
       <option value="João Pessoa">João Pessoa</option>
       <option value="Patos">Patos</option>
     </select><br><br>
+
+    <label for="date">Data:</label>
+    <input type="date" id="date" required><br><br>
+    
+    <label for="time">Horário:</label>
+    <select id="time" required>
+      <option value="">Selecione um horário</option>
+    </select><br><br>
+    
     <button type="submit">Verificar Disponibilidade</button>
   </form>
 
@@ -132,46 +126,71 @@
   </div>
 
   <script>
-    async function validateAndRedirect(event) {
-  event.preventDefault();
-
-  // Captura os valores dos campos
-  const selectedDate = document.getElementById("date").value;
-  const selectedTime = document.getElementById("time").value;
-  const selectedRegion = document.getElementById("region").value;
-
-  // Log dos valores capturados
-  console.log('Valores capturados:', {
-    date: selectedDate,
-    time: selectedTime,
-    region: selectedRegion
-  });
-
-  // URL do Web App
-  const webAppUrl = `https://script.google.com/macros/s/AKfycbwhYVlVEBfh-BOhR-iaAXn1e7tU9t1MzQ1OcDCjfF7LZa5hjbdlmYvZHCgDHeczAc-3fQ/exec?date=${encodeURIComponent(selectedDate)}&time=${encodeURIComponent(selectedTime)}&region=${encodeURIComponent(selectedRegion)}`;
-
-  console.log('URL do Web App:', webAppUrl);
+    function updateAvailableHours() {
+  const region = document.getElementById('region').value;
+  const timeSelect = document.getElementById('time');
   
-  try {
-    // Log antes da requisição
-    console.log('Iniciando requisição para o web app...');
-
-    const response = await fetch(webAppUrl);
-    const result = await response.json();
-
-    // Log da resposta
-    console.log('Resposta do web app:', result);
-
-    if (result.success) {
-      window.location.href = result.redirectUrl;
-    } else {
-      showDialog(result.message);
-    }
-  } catch (error) {
-    console.error('Erro na requisição:', error);
-    showDialog(`Erro inesperado: ${error.message}`);
+  timeSelect.innerHTML = '<option value="">Selecione um horário</option>';
+  
+  if (!region) {
+    return;
   }
+  
+  const hours = region === 'Soledade' 
+    ? ['13:00', '14:00', '15:00', '16:00', '17:00']
+    : ['8:00', '9:00', '10:00', '11:00'];  // Note que removemos os zeros à esquerda de 8 e 9
+  
+  hours.forEach(hour => {
+    const option = document.createElement('option');
+    option.value = hour;
+    option.textContent = hour;
+    timeSelect.appendChild(option);
+  });
 }
+
+    // Chama a função quando a página carrega
+    document.addEventListener('DOMContentLoaded', updateAvailableHours);
+
+    async function validateAndRedirect(event) {
+      event.preventDefault();
+
+      // Captura os valores dos campos
+      const selectedDate = document.getElementById("date").value;
+      const selectedTime = document.getElementById("time").value;
+      const selectedRegion = document.getElementById("region").value;
+
+      // Log dos valores capturados
+      console.log('Valores capturados:', {
+        date: selectedDate,
+        time: selectedTime,
+        region: selectedRegion
+      });
+
+      // URL do Web App
+      const webAppUrl = `https://script.google.com/macros/s/AKfycbwhYVlVEBfh-BOhR-iaAXn1e7tU9t1MzQ1OcDCjfF7LZa5hjbdlmYvZHCgDHeczAc-3fQ/exec?date=${encodeURIComponent(selectedDate)}&time=${encodeURIComponent(selectedTime)}&region=${encodeURIComponent(selectedRegion)}`;
+
+      console.log('URL do Web App:', webAppUrl);
+      
+      try {
+        // Log antes da requisição
+        console.log('Iniciando requisição para o web app...');
+
+        const response = await fetch(webAppUrl);
+        const result = await response.json();
+
+        // Log da resposta
+        console.log('Resposta do web app:', result);
+
+        if (result.success) {
+          window.location.href = result.redirectUrl;
+        } else {
+          showDialog(result.message);
+        }
+      } catch (error) {
+        console.error('Erro na requisição:', error);
+        showDialog(`Erro inesperado: ${error.message}`);
+      }
+    }
 
     // Função para exibir a caixa de diálogo
     function showDialog(message) {
